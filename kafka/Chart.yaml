@@ -1,6 +1,6 @@
 apiVersion: v2
-name: logstash
-description: A logstash chart for logstash
+name: kafka
+description: A logstash chart for kafka
 type: application
 
 version: 0.1.0
