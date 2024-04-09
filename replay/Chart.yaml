@@ -1,0 +1,8 @@
+apiVersion: v2
+name: python
+description: A Helm chart for python applications
+type: application
+
+version: 0.1.0
+
+appVersion: "1.16.0"
