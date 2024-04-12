@@ -30,7 +30,8 @@ spec:
 
           volumeMounts:
           - name: logstash-pipeline-volume
-            mountPath: /usr/share/logstash/config/pipelines/
+            mountPath: /usr/share/logstash/config/pipelines.yml
+            subPath: pipelines.yml
           - name: logstash-config-pipelines-volume
             mountPath: /usr/share/logstash/pipeline/ 
 
