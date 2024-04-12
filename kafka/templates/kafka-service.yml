@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafkaservice
+  name: broker
   labels:
-    app: kafkaservice
+    app: broker
 spec:
     ports:
     - name: kafka
@@ -17,5 +17,14 @@ spec:
     - name: init-port
       port: 9093
       targetPort: 9093
+      protocol: TCP
+    - name: internal
+      port: 29093
+      targetPort: 29093
+      protocol: TCP
+    - name: spark
+      port: 29094
+      targetPort: 29094
+      protocol: TCP
     selector:
       app: kafka-deployment
