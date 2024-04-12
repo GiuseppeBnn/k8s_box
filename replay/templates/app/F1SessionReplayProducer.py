@@ -182,8 +182,6 @@ def Start():
     previousTime = -40
     deltaTime = 0
 
-    file= open("leclerc.txt", "w")
-    file.close()
 
     filejson = open("rawDataMonacoshort.json", "r")
     for jsondata in filejson:

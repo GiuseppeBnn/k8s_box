@@ -9,13 +9,15 @@ spec:
           command: ["sh", "-c"]
           args: 
             - |
-              pip install -r /app/requirements.txt && python /app/F1SessionReplayProducer.py
+              pip install -r /app/requirements.txt && cd /app/ && python F1SessionReplayProducer.py
           securityContext:
             runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
           volumeMounts:
             - name: volume1
               mountPath: /app/
     volumes:
         - name: volume1
           hostPath:
-            path: /Replay/app/
+            path: /SharedFS/app/
