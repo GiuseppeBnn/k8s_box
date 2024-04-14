@@ -39,5 +39,11 @@ spec:
             port: 9200
           initialDelaySeconds: 21
           periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9200
+          initialDelaySeconds: 21
+          periodSeconds: 10
         
           

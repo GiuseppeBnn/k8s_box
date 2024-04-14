@@ -24,6 +24,25 @@ spec:
       pip install elasticsearch
       echo "Starting PySpark Job"
       spark-submit --conf spark.blockManager.port=9191 --conf spark.driver.port=9999 --num-executors 2 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 --master spark://sp-master:7077 /home/jovyan/SparkRegression.py
+    
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 4040
+      initialDelaySeconds: 40
+      periodSeconds: 30
+      timeoutSeconds: 10
+      successThreshold: 1
+      failureThreshold: 10
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 4040
+      initialDelaySeconds: 50
+      periodSeconds: 30
+      timeoutSeconds: 10
+      successThreshold: 1
+      failureThreshold: 10
   volumes:
   - name: pyspark
     hostPath:
