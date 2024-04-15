@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-kafka-job
+spec:
+  completions: 2
+  parallelism: 1
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: kafka-init-container
+        image: confluentinc/cp-kafka:latest
+        command: ["/bin/bash", "-c"]
+        args: 
+        - |
+            # blocks until kafka is reachable
+            kafka-topics --bootstrap-server broker:9093 --list   
+
+            echo -e 'Creating kafka topics'
+            kafka-topics --bootstrap-server broker:9093 --create --if-not-exists --topic LiveTimingData --replication-factor 1 --partitions 1
+
+            echo -e 'Successfully created the following topics:'
+            kafka-topics --bootstrap-server broker:9093 --list

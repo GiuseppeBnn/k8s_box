@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+  labels:
+    app: logstash
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+      name: logstash-port
+    - port: 5001
+      targetPort: 5001
+      protocol: TCP
+      name: logstash-port-1
+    - port: 5002
+      targetPort: 5002
+      protocol: TCP
+      name: logstash-port-2
+  selector:
+    app: logstash-deployment

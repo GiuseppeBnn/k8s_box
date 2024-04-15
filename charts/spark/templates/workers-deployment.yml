@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-workers
+  labels:
+    app: spark
+    role: workers
+spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: spark
+        role: workers
+    template:
+      metadata:
+        labels:
+          app: spark
+          role: workers
+      spec:
+        containers:
+        - name: spark-worker
+          image: bde2020/spark-worker:3.3.0-hadoop3.3
+          env:
+          - name: SPARK_MASTER
+            value: spark://sp-master:7077
+          - name: SPARK_WORKER_CORES
+            value: "1"
+          - name: SPARK_WORKER_MEMORY
+            value: "2g"
+          - name: SPARK_WORKER_WEBUI_PORT
+            value: "8081"
+          - name: SPARK_EXECUTOR_MEMORY
+            value: "2g"
+          - name: SPARK_WORKLOAD
+            value: "worker"
+          ports:
+          - containerPort: 8081
+          resources:
+            limits:
+              cpu: "2"
+              memory: "3Gi" 
+            requests:
+              cpu: "0.1"
+              memory: "500Mi"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 20
+            periodSeconds: 5
+          

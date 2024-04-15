@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "logstash-pipeline"
+  labels:
+    app: logstash-cm
+data:
+{{ range $path, $_ :=  .Files.Glob  "**pipelines.yml" }}
+  {{ $path | base }}: |
+{{ $.Files.Get $path | indent 4 }}
+{{ end }}
+
