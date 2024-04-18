@@ -1,0 +1,26 @@
+name: pyspark
+
+image: jupyter/pyspark-notebook:python-3.7.12
+
+ports:
+- port: 4040
+  protocol: TCP
+- port: 9999
+  protocol: TCP
+- port: 9191
+  protocol: TCP
+
+volumes:
+- name: pyspark
+  hostPath:
+    path: /SparkRegression.py
+    type: File
+
+volumeMounts:
+- name: pyspark
+  mountPath: /home/jovyan/SparkRegression.py
+
+commands:
+- command: pip install elasticsearch
+- command: echo "Starting PySpark Job"
+- command: spark-submit --conf spark.blockManager.port=9191 --conf spark.driver.port=9999 --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.0 --master spark://sp-master:7077 /home/jovyan/SparkRegression.py

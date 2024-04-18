@@ -1,0 +1,36 @@
+name: broker
+
+image: "confluentinc/cp-kafka:latest"
+
+ports:
+- port: 29093
+  protocol: TCP
+- port: 29094
+  protocol: TCP
+- port: 29095
+  protocol: TCP
+- port: 9092
+  protocol: TCP
+
+environment:
+- name: KAFKA_BROKER_ID
+  value: 1
+- name: KAFKA_ZOOKEEPER_CONNECT
+  value: zookeeper:2181
+- name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+  value: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT,KAFKA_UI:PLAINTEXT,SPARK:PLAINTEXT
+- name: KAFKA_ADVERTISED_LISTENERS
+  value: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092,PLAINTEXT_EXTERNAL://broker:29093,KAFKA_UI://broker:29094,SPARK://broker:29095
+- name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+  value: 1
+- name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+  value: 1
+- name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+  value: 1
+ 
+jobs:
+  image: confluentinc/cp-kafka:latest
+  commands: 
+  - command: kafka-topics --bootstrap-server broker:29093 --list 
+
+  - command: kafka-topics --bootstrap-server broker:29093 --create --if-not-exists --topic LiveTimingData

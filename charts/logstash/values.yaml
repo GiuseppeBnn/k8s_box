@@ -1,12 +1,31 @@
-image:
-  repository: logstash
-  tag: 8.7.1
+name: logstash
 
-service:
-  ports:
-    - protocol: TCP
-      port: 5000
-    - protocol: TCP
-      port: 5001
-    - protocol: TCP
-      port: 5002
+image: logstash:8.7.1
+
+ports:
+- protocol: TCP
+  port: 5000
+- protocol: TCP
+  port: 5001
+- protocol: TCP
+  port: 5002
+
+environment:
+- name: LS_JAVA_OPTS
+  value: -Xms1g -Xmx2g
+
+volumes:
+- name: logstash-config-pipelines-volume
+  configMap:
+    name: logstash-config-pipelines
+- name: logstash-pipeline-volume
+  configMap:
+    name: logstash-pipeline
+
+
+volumeMounts:
+- name: logstash-pipeline-volume
+  mountPath: /usr/share/logstash/config/pipelines.yml
+  subPath: pipelines.yml
+- name: logstash-config-pipelines-volume
+  mountPath: /usr/share/logstash/pipeline/

@@ -1,0 +1,16 @@
+name: kafka-ui
+
+image: provectuslabs/kafka-ui:latest
+
+ports:
+- port: 8080
+  protocol: TCP
+  hostPort: 30000
+
+environment:
+- name: KAFKA_CLUSTERS_0_NAME
+  value: "F1"
+- name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+  value: "broker:29095"
+- name: KAFKA_CLUSTERS_0_ZOOKEEPER
+  value: "zookeeper:2181"

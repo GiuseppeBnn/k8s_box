@@ -1,0 +1,15 @@
+name: elasticsearch
+
+image: elasticsearch:8.7.1
+
+ports:
+- port: 9200
+  protocol: TCP
+
+environment:
+- name: discovery.type
+  value: single-node
+- name: xpack.security.enabled
+  value: "false"
+- name: ES_JAVA_OPTS
+  value: "-Xms2g -Xmx2g"

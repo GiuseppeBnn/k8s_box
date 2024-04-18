@@ -1,0 +1,19 @@
+name: replay
+
+image: python:latest
+
+commands: 
+- command: pip install -r /app/requirements.txt
+- command: cd /app/
+- command: python F1SessionReplayProducer.py
+  
+
+volumeMounts:
+- name: volume1
+  mountPath: /app/
+
+volumes:
+- name: volume1
+  hostPath:
+    path: /app/
+    type: Directory
