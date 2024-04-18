@@ -1,8 +1,0 @@
-apiVersion: v2
-name: pyspark
-description: A Helm chart for pyspark on k8s
-type: application
-
-version: 0.1.0
-
-appVersion: "1.16.0"

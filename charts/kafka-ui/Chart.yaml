@@ -1,8 +1,0 @@
-apiVersion: v2
-name: kafka-ui
-description: A logstash chart for kafka-ui
-type: application
-
-version: 0.1.0
-
-appVersion: "1.16.0"
