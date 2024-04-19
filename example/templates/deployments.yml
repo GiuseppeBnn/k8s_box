@@ -26,7 +26,7 @@ spec:
         {{ if .ports }}
         ports:
         {{ range .ports }}
-        - name: {{ .port }}-{{ .protocol | lower }}
+        - name: {{ .port }}-{{ .protocol | lower | default "port" }}
           containerPort: {{ .port }}
         {{ end }}
         {{ end }}
@@ -92,8 +92,8 @@ spec:
     app: {{ .name }}-deployment
   ports:
   {{- range .ports }}
-  - name: {{ .port }}-{{ .protocol |  lower }}
-    protocol: {{ .protocol }}
+  - name: {{ .port }}-{{ .protocol |  lower | default "port" }}
+    protocol: {{ .protocol | default "TCP" }}
     port: {{ .port }}
     targetPort: {{ .port }}
     {{ if .hostPort }}
