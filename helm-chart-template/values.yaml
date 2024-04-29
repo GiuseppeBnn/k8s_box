@@ -16,19 +16,11 @@ components:
   - command: apt install nginx
   volumes:
   - name: volume1
-    hostPath:
-      path: /path/to/a/folder/in/host/machine
-      type: Directory
-  - name: volume2
-    hostPath:
-      path: /path/to/a/file/in/host/machine.config
-      type: File
-  volumeMounts:
-  - name: volume1
+    directory: /path/to/a/folder/to/mount
     mountPath: /mount/path/of/folder
   - name: volume2
-  	mountPath: /mount/path/of/file.config
-  	
+    file: /path/to/a/file/to/mount
+    mountPath: /mount/path/of/file.config
   jobs:
     image: job-image:latest
     commands:
