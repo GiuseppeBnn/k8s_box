@@ -1,3 +1,4 @@
+{{ $globalValue := .Values }}
 
 {{ range .Values.components }}
 {{ if .active }}
@@ -46,16 +47,17 @@ spec:
             {{ range .commands }}
             {{ .command }}
             {{ end }}
-        {{- end }}
+        {{ end }}
 
-        {{- if .volumeMounts }}
+        {{- if .volumes }}
         volumeMounts:
-        {{- range .volumeMounts }}
+        {{- range .volumes }}
         - name: {{ .name }}
           mountPath: {{ .mountPath }}
-          {{- if .subPath }}
-          subPath: {{ .subPath }}
-          {{- end }}
+          {{- if .file }}
+          {{- $filename := base .file }}
+          subPath: {{ $filename }}
+          {{ end }}
         {{- end }}
         {{- end }}
 
@@ -63,15 +65,19 @@ spec:
       volumes:
       {{- range .volumes }}
       - name: {{ .name }}
-        {{- if .configMap }}
-        configMap:
-          name: {{ .configMap.name }}
-        {{- end }}
-        {{- if .hostPath }}
+      {{- $sourcePath := "" }}
+         {{- $sourcePath = .directory }}
+         {{- if .file }}
+           {{- $sourcePath = .file }}
+         {{- end }}
+      {{- if $globalValue.nfsIp }}
+        nfs:
+          server: {{ $globalValue.nfsIp }}
+          path: /{{ base $globalValue.rootDirectory }}{{ if .file }}{{ dir $sourcePath }}{{ else }}{{ $sourcePath }}{{ end }}
+      {{- else }}
         hostPath:
-          path: /SharedFS{{ .hostPath.path }}
-          type: {{ .hostPath.type }}
-        {{- end }}
+          path: /{{ base $globalValue.rootDirectory }}{{ if .file }}{{ dir $sourcePath }}{{ else }}{{ $sourcePath }}{{ end }}
+      {{- end }}
       {{- end }}
       {{- end }}
 ---
