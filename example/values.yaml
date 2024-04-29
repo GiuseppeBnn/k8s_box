@@ -1,3 +1,4 @@
+
 components:
   - name: replay
     image: python:latest
@@ -8,12 +9,7 @@ components:
     
     volumes:
     - name: volume1
-      hostPath:
-        path: /app/
-        type: Directory
-        
-    volumeMounts:
-    - name: volume1
+      directory: /app/
       mountPath: /app/
 
     active: true
@@ -30,24 +26,16 @@ components:
 
     environment:
     - name: LS_JAVA_OPTS
-      value: -Xms1g -Xmx2g
+      value: -Xms1g -Xmx1g
 
     volumes:
     - name: logstash-config-pipelines-confs
-      hostPath:
-        path: /pipeline/confs/
-        type: Directory
-    - name: logstash-pipelinesyml
-      hostPath:
-        path: /pipeline/pipelines.yml
-        type: File
-    
-    volumeMounts:
-    - name: logstash-pipelinesyml
-      mountPath: /usr/share/logstash/config/pipelines.yml
-    - name: logstash-config-pipelines-confs
+      directory: /pipeline/confs
       mountPath: /usr/share/logstash/pipeline/
-      
+    - name: logstash-pipelinesyml
+      file: /pipeline/pipelines.yml
+      mountPath: /usr/share/logstash/config/pipelines.yml
+
     active: true
   
   - name: zookeeper
@@ -162,11 +150,7 @@ components:
       protocol: TCP
     volumes:
     - name: pyspark
-      hostPath:
-        path: /SparkRegression.py
-        type: File
-    volumeMounts:
-    - name: pyspark
+      file: /SparkRegression.py
       mountPath: /home/jovyan/SparkRegression.py
     commands:
     - command: pip install elasticsearch
@@ -185,7 +169,7 @@ components:
     - name: xpack.security.enabled
       value: "false"
     - name: ES_JAVA_OPTS
-      value: "-Xms2g -Xmx2g"
+      value: "-Xms1g -Xmx1g"
     active: true
   
   - name: kibana
@@ -198,3 +182,7 @@ components:
     - name: ELASTICSEARCH_HOSTS
       value: http://elasticsearch:9200
     active: true
+
+
+nfsIp: 192.168.1.1 # This is the IP address of the NFS server, change it to the IP address of your NFS server
+rootDirectory: /SharedFS # This is the root directory where all the files that need be searched and mounted are present
