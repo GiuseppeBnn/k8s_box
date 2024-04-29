@@ -2,3 +2,5 @@
 **/.helmignore
 /kubernetes_installation_commands.sh
 /.vscode
+**/node_modules/
+**/build/
