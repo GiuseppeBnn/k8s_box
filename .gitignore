@@ -1,6 +1,6 @@
 /temp
-**/.helmignore
 /kubernetes_installation_commands.sh
 /.vscode
 **/node_modules/
 **/build/
+/k8s_box_ui

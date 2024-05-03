@@ -1,31 +1,8 @@
 ## K8S_BOX GENERAL TEMPLATE EXPLANATION
 
-To create an helm chart and deploy your project in Kubernetes (or Minikube ecc.) you will need obviously a working K8s cluster or Minikube and Helm installed on your machine.
+To create an helm chart and deploy your project in Kubernetes (or microK8s ecc.) you will need obviously a working K8s cluster or microK8s and Helm installed on your machine.
 
-First of all generate a empty helm chart with the command:
-
-```bash
-$ helm create <chart-name>
-```
-
-Now remove *values.yaml* file, *templates* and *chart* folder:
-
-```bash
-$ rm ./values.yaml
-$ rm -rf ./templates ./charts
-```
-
-Create from zero a new *templates* folder and a new *values.yaml* file in the chart main directory. Next create a template file *template.yaml* in *templates* directory:
-
-```bash
-$ mkdir templates
-$ touch values.yaml
-$ touch /templates/template.yaml
-```
-
-Copy the template file from this repository as it is and save. 
-
-To create your deployments you have to specify components, images, ports, variable ecc.... in the *values.yaml* as descripted below.
+Copy the contents of the *helm-chart-template* folder. Open *values.yaml* and add the components of your deployment in the way explained below.
 
 ### Adding the components of your deployment
 
@@ -108,31 +85,53 @@ commands:
 - command: python program.py
 ```
 
-### VOLUMES and VOLUMEMOUNTS
+### VOLUMES
 
-Like compose, *volumes* explicits folders in the host executor machine that will be mounted (via VolumesMounts) in the container. You can specify if a volume is a file or a directory. The syntax is:
+Like compose, *volumes* explicits folders in the host executor machine that will be mounted in the container. You can specify if a volume is a file or a directory. The syntax is:
 
 ```yaml
 volumes:
-- name: volume-name
-  hostPath: 
-    path: /path/to/the/folder/to/mount
-    type: Directory
-- name: volume2-name
-  hostPath:
-  	path: /path/to/the/file/to/mount.conf
-  	type: File
-```
-
-volumeMounts indicates the mount destination path of a predefined Volume like this:
-
-```yaml
-volumeMounts:
-- name: volume-name  #the name of the volume you want to mount
+- name: volume-name 
+  directory: /path/to/the/folder/to/mount
   mountPath: /path/to/the/mount/destination/folder
 - name: volume2-name
+  file: /path/to/the/file/to/mount.conf
   mountPath: /path/to/the/mount/destination/file.conf
+
 ```
+
+By default the template searches in the file system of the host machine. This case is recommended for microK8s or Minikube users. In a multi-machine Kubernetes cluster is recommended to use NFS. To do this you need to specify the NFS server ip in the *nfsIp* field. 
+
+```yaml
+nfsIp: 192.168.1.123
+```
+
+
+
+#### Root directory
+
+If you need to mount (import) a folder or a single file from the host file system (or NFS), you must specify the root directory path via the *rootDirectory* field. The template will search the specified path for folders or files starting by the *rootDirectory*. For example, if you want to mount the following directory
+
+```yaml
+volumes:
+- name: volume1
+  directory: /build/scripts
+  mountPath: /etc/build/scripts
+```
+
+With a rootDirectory like:
+
+```yaml
+rootDirectory: /etc/foo/
+```
+
+The template expects to find *scripts* directory in
+
+```
+/etc/foo/build/scripts/
+```
+
+So all the files and directories that need to be mounted must be all in the rootDirectory, following the path and the pattern mentioned above.
 
 ### JOBS
 
@@ -168,20 +167,12 @@ components:
   - command: apt get update
   - command: apt install nginx
   volumes:
-  - name: volume1
-    hostPath:
-      path: /path/to/a/folder/in/host/machine
-      type: Directory
-  - name: volume2
-    hostPath:
-      path: /path/to/a/file/in/host/machine.config
-      type: File
-  volumeMounts:
-  - name: volume1
-    mountPath: /mount/path/of/folder
-  - name: volume2
-  	mountPath: /mount/path/of/file.config
-  	
+  - name: volume-name 
+    directory: /path/to/the/folder/to/mount
+    mountPath: /path/to/the/mount/destination/folder
+  - name: volume2-name
+    file: /path/to/the/file/to/mount.conf
+    mountPath: /path/to/the/mount/destination/file.conf
   jobs:
     image: job-image:latest
     commands:
@@ -192,6 +183,9 @@ components:
   image: another-component:latest
   ....... 
   ........
+
+nfsIp: 192.168.1.123 #optional for clusters with nfs
+rootDirectory: /var/foo #mandatory if you use volumes to mount directories and files
 ```
 
 This is a generic example, a complete and working one can be find in the *example* directory that will run multiple components (and relative container) that communicate with each other.

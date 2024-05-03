@@ -1,0 +1,44 @@
+rootDirectory: /hello-world-root-dir #absolute path to the dir
+
+components:
+- name: producer
+  image: python:latest
+  active: true
+  volumes:
+  - name: producer-folder
+    directory: /producer/
+    mountPath: /app/
+  commands:
+  - command: cd /app
+  - command: python producer.py
+
+- name: logstash
+  image: logstash:8.7.1
+  active: true
+  ports:
+  - port: 9191
+    protocol: TCP
+  volumes:
+  - name: logstash-conf   #don't use dots ('.') in the name, it will cause errors
+    file: /logstash/logstash.conf
+    mountPath: /usr/share/logstash/pipeline/logstash.conf
+  - name: pipelines-yml
+    file: /logstash/pipelines.yml
+    mountPath: /usr/share/logstash/config/pipelines.yml
+  environment:
+  - name: LS_JAVA_OPTS
+    value: -Xms1g -Xmx1g
+
+- name: consumer
+  image: python:latest
+  active: true
+  ports:
+  - port: 9292
+    protocol: TCP
+  volumes:
+  - name: consumer-file
+    file: /consumer/consumer.py
+    mountPath: /app/consumer.py
+  commands:
+  - command: cd /app
+  - command: python consumer.py

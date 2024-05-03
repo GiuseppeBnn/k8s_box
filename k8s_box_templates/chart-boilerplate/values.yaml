@@ -1,0 +1,7 @@
+rootDirectory: #/root/foo     #change this to the directory of your files to be mounted
+#nfsIp: #192.168.1.123       #uncomment this line if you are using NFS and provide the correct NFS IP address if you are using NFS
+components:
+- name: #insert-name
+  image: #insert-image
+  active: #true-or-false
+  #complete the rest of the fields
